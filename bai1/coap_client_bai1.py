@@ -1,12 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Bai 1 - CoAP Client co ban.
-
-Thuc hien: GET /iot/lab/message  ->  POST thong diep sinh vien.
-
-Chay: python coap_client_bai1.py [--host localhost] [--port 5683]
-                                 [--count 1] [--test-404] [--timeout 5]
-"""
 import argparse
 import asyncio
 import sys
@@ -17,8 +8,8 @@ from aiocoap import Code, Message
 if sys.platform == "win32" and hasattr(asyncio, "WindowsSelectorEventLoopPolicy"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-STUDENT_ID = "B23DCCN274"
-STUDENT_NAME = "Nguyen Danh Hai"
+STUDENT_ID = "B23DCCN274, B23DCCN400"
+STUDENT_NAME = "Nguyen Danh Hai, Nguyen Quang Huy"
 POST_TEXT = "Xin chao tu CoAP Client - %s - %s" % (STUDENT_ID, STUDENT_NAME)
 
 
@@ -89,7 +80,8 @@ async def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bai 1 - CoAP Client")
-    parser.add_argument("--host", default="localhost", help="dia chi Server")
+    default_host = "127.0.0.1" if sys.platform == "win32" else "localhost"
+    parser.add_argument("--host", default=default_host, help="dia chi Server")
     parser.add_argument("--port", type=int, default=5683, help="cong Server")
     parser.add_argument("--count", type=int, default=1, help="so lan gui POST lien tiep")
     parser.add_argument("--test-404", action="store_true", help="thu truy cap URI khong ton tai")

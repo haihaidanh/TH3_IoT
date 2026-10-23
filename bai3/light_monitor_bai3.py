@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Bai 3 - Light Monitoring Client (dung CoAP Observe, KHONG dung vong lap GET).
-
-Dang ky Observe toi coap://localhost:5683/iot/lab/light01/status, nhan
-trang thai ban dau, sau do Server tu day thong bao moi khi den doi trang thai.
-Dung bang Ctrl+C.
-
-Chay: python light_monitor_bai3.py [--host localhost] [--port 5683] [--timeout 5]
-"""
 import argparse
 import asyncio
 import json
@@ -77,7 +67,8 @@ async def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bai 3 - Light Monitoring Client")
-    parser.add_argument("--host", default="localhost")
+    default_host = "127.0.0.1" if sys.platform == "win32" else "localhost"
+    parser.add_argument("--host", default=default_host)
     parser.add_argument("--port", type=int, default=5683)
     parser.add_argument("--timeout", type=float, default=5.0)
     try:

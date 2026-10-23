@@ -1,16 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Bai 3 - Light Controller Client.
-
-Lenh nhap tu ban phim:
-  ON      -> PUT {"device_id":"light01","command":"ON"}
-  OFF     -> PUT {"device_id":"light01","command":"OFF"}
-  STATUS  -> GET trang thai hien tai
-  BAD     -> (kiem thu) gui lenh khong hop le de xem ma loi 4.00
-  EXIT    -> thoat
-
-Chay: python light_controller_bai3.py [--host localhost] [--port 5683] [--timeout 5]
-"""
 import argparse
 import asyncio
 import json
@@ -82,7 +69,8 @@ async def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bai 3 - Light Controller Client")
-    parser.add_argument("--host", default="localhost")
+    default_host = "127.0.0.1" if sys.platform == "win32" else "localhost"
+    parser.add_argument("--host", default=default_host)
     parser.add_argument("--port", type=int, default=5683)
     parser.add_argument("--timeout", type=float, default=5.0)
     try:

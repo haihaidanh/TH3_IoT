@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Bai 2 - Monitoring CoAP Client.
-
-GET dinh ky (mac dinh 3 giay) toi coap://localhost:5683/iot/lab/<device>/data,
-phan tich JSON, hien thi va canh bao. Dung bang Ctrl+C.
-
-Chay: python monitor_client_bai2.py [--host localhost] [--port 5683]
-                                    [--device sensor01] [--interval 3]
-                                    [--csv log.csv] [--timeout 5]
-"""
 import argparse
 import asyncio
 import csv
@@ -100,7 +89,8 @@ async def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bai 2 - Monitoring CoAP Client")
-    parser.add_argument("--host", default="localhost")
+    default_host = "127.0.0.1" if sys.platform == "win32" else "localhost"
+    parser.add_argument("--host", default=default_host)
     parser.add_argument("--port", type=int, default=5683)
     parser.add_argument("--device", default="sensor01", help="sensor01 | sensor02 | sensor03")
     parser.add_argument("--interval", type=float, default=3.0, help="chu ky GET (giay)")

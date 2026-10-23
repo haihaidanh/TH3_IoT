@@ -1,15 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Bai 3 - Smart Light CoAP Server (GET / PUT / Observe).
-
-Tai nguyen : coap://localhost:5683/iot/lab/light01/status
-Trang thai ban dau: OFF
-  GET     -> {"device_id": "light01", "status": "ON|OFF"}
-  PUT     -> {"device_id": "light01", "command": "ON|OFF"}
-  Observe -> tu dong thong bao cho cac Client dang theo doi khi trang thai doi
-
-Chay: python light_server_bai3.py [--host ::] [--port 5683] [--log light_log.txt]
-"""
 import argparse
 import asyncio
 import json
@@ -107,21 +95,26 @@ async def main(host, port, log_path):
     )
     root.add_resource(["iot", "lab", DEVICE_ID, "status"], LightStatusResource(log_path))
 
-    await aiocoap.Context.create_server_context(root, bind=(host, port))
+    server = await aiocoap.Context.create_server_context(root, bind=(host, port))
     print("CoAP Smart Light Server started...")
     print("Resource: /iot/lab/%s/status  (GET, PUT, Observe)" % DEVICE_ID)
     print("Trang thai ban dau: OFF. Nhan Ctrl+C de dung.")
     print()
-    await asyncio.get_running_loop().create_future()
+    try:
+        while True:
+            await asyncio.sleep(1)
+    finally:
+        await server.shutdown()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bai 3 - Smart Light CoAP Server")
-    parser.add_argument("--host", default="::")
+    default_host = "127.0.0.1" if sys.platform == "win32" else "::"
+    parser.add_argument("--host", default=default_host, help="dia chi bind")
     parser.add_argument("--port", type=int, default=5683)
     parser.add_argument("--log", default=None, help="ghi nhat ky thay doi trang thai ra file")
     args = parser.parse_args()
     try:
         asyncio.run(main(args.host, args.port, args.log))
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, asyncio.CancelledError):
         print("\nSmart Light Server stopped.")

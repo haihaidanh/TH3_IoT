@@ -1,13 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Bai 1 - CoAP Server co ban.
-
-Tai nguyen : coap://localhost:5683/iot/lab/message
-Phuong thuc: GET  -> tra ve thong diep chao mung
-             POST -> nhan thong diep tu Client, in noi dung + thoi diem nhan
-
-Chay: python coap_server_bai1.py [--host ::] [--port 5683]
-"""
 import argparse
 import asyncio
 import sys
@@ -63,20 +53,25 @@ async def main(host, port):
     )
     root.add_resource(["iot", "lab", "message"], MessageResource())
 
-    await aiocoap.Context.create_server_context(root, bind=(host, port))
+    server = await aiocoap.Context.create_server_context(root, bind=(host, port))
     print("CoAP Server started on port %d" % port)
     print("Resource: /iot/lab/message  (GET, POST)")
     print("Nhan Ctrl+C de dung server.")
     print()
-    await asyncio.get_running_loop().create_future()  # chay mai mai
+    try:
+        while True:
+            await asyncio.sleep(1)
+    finally:
+        await server.shutdown()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bai 1 - CoAP Server")
-    parser.add_argument("--host", default="::", help="dia chi bind (mac dinh :: = tat ca)")
+    default_host = "127.0.0.1" if sys.platform == "win32" else "::"
+    parser.add_argument("--host", default=default_host, help="dia chi bind (mac dinh 127.0.0.1 tren Windows, :: tren Linux)")
     parser.add_argument("--port", type=int, default=5683, help="cong UDP (mac dinh 5683)")
     args = parser.parse_args()
     try:
         asyncio.run(main(args.host, args.port))
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, asyncio.CancelledError):
         print("\nCoAP Server stopped.")

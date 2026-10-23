@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Bai 2 - Sensor CoAP Server (mo phong cam bien nhiet do + do am).
-
-Tai nguyen : coap://localhost:5683/iot/lab/sensor01/data
-             (mo rong: sensor02, sensor03 cung chay tren server nay)
-Phuong thuc: GET -> tra ve JSON gia tri cam bien moi nhat
-Du lieu tu dong sinh ngau nhien moi 3 giay.
-
-Chay: python sensor_server_bai2.py [--host ::] [--port 5683] [--interval 3]
-"""
 import argparse
 import asyncio
 import json
@@ -76,7 +65,7 @@ async def main(host, port, interval):
         sensors.append(s)
         root.add_resource(["iot", "lab", dev, "data"], s)
 
-    await aiocoap.Context.create_server_context(root, bind=(host, port))
+    server = await aiocoap.Context.create_server_context(root, bind=(host, port))
     task = asyncio.create_task(updater(sensors, interval))  # giu tham chieu
     print("Sensor CoAP Server started on port %d" % port)
     for dev in DEVICES:
@@ -84,18 +73,21 @@ async def main(host, port, interval):
     print("Cap nhat du lieu moi %.0f giay. Nhan Ctrl+C de dung." % interval)
     print()
     try:
-        await asyncio.get_running_loop().create_future()
+        while True:
+            await asyncio.sleep(1)
     finally:
         task.cancel()
+        await server.shutdown()
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Bai 2 - Sensor CoAP Server")
-    parser.add_argument("--host", default="::")
+    default_host = "127.0.0.1" if sys.platform == "win32" else "::"
+    parser.add_argument("--host", default=default_host, help="dia chi bind")
     parser.add_argument("--port", type=int, default=5683)
     parser.add_argument("--interval", type=float, default=3.0, help="chu ky cap nhat (giay)")
     args = parser.parse_args()
     try:
         asyncio.run(main(args.host, args.port, args.interval))
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, asyncio.CancelledError):
         print("\nSensor CoAP Server stopped.")
