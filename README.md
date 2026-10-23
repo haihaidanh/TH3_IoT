@@ -488,5 +488,3 @@ Thoat chuong trinh.
 | Client báo timeout | Kiểm tra Server đã chạy chưa, đúng `--host` / `--port` chưa, tường lửa có chặn UDP 5683 không. |
 | `OSError: address already in use` | Đang có Server khác dùng cổng 5683. Dừng Server cũ (`Ctrl+C`) rồi chạy lại. |
 | Chạy hai máy khác nhau không kết nối được | Dùng IP của máy Server, mở UDP 5683 trên tường lửa. |
-
-Toàn bộ nội dung hiển thị của chương trình dùng ký tự không dấu (ASCII) giống đề bài nên không bị lỗi font trên Command Prompt / PowerShell.
